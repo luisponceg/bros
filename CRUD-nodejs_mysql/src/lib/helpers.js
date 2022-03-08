@@ -2,7 +2,7 @@ const bcrypt = require ('bcrypt');
 const helpers ={};
 
 
-console.log("---helpers---");
+
 
 helpers.encryptPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
@@ -13,10 +13,10 @@ helpers.encryptPassword = async (password) => {
 
      
 
-helpers.matchPassword = async (password,savedPassword) =>{
+helpers.matchPassword =  (password,savedPassword) =>{
     try{
         console.log("valid");
-        return await bcrypt.compare(password,savedPassword);
+        return  bcrypt.compare(password,savedPassword);
     }catch(e){
         console.log(e);
     }

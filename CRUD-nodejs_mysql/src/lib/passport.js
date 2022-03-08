@@ -10,22 +10,29 @@ passport.use('local.signin', new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
     passReqToCallback: true
-}, async (req, username, password, done) => {
-   console.log(req.body);
-    const rows =  pool.query('SELECT * FROM users WHERE username = ?  ', [username], function (error, results, fields) {
-      if(rows.length > 0){
-          const user = rows [0];
-          const validPassword = helpers.matchPassword(password,user.Password);
-          if (validPassword){
-              done(null,user,req.flash('success','Bienvenido'));
-          }else{
-              done(null,false,req.flash('message','Contraseña incorrecta'));
-          }
-      } else{
-          return done(null,false,req.flash('message','No existe el usuario'));
-      }
+},async (req, username, password, done) => {
 
-    });
+    pool.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+        if (results.length > 0) {
+            const userPass= results[0].password;
+            const user = results[0];
+            console.log('Password:', userPass);
+            const validPassword =  await helpers.matchPassword(password, userPass);
+            console.log(validPassword);
+            if (validPassword) {
+                console.log('Contraseña valida');
+                console.log(validPassword);
+                return done(null, user, req.flash('SUCCESS', 'Bienvenido'));
+            } else {
+                console.log('Contraseña invalida');
+                return done(null, false, req.flash('message', 'Contraseña incorrecta'));
+            }
+          } else {
+            return done(null, false, req.flash('message', 'Nombre de usuario incorrecto'));
+          } });
+ 
+   
+
 
 }));
 
