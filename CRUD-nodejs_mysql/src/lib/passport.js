@@ -43,9 +43,7 @@ passport.use('local.signup', new LocalStrategy({ usernameField: 'username', pass
    async  (req, username, password, done) => {
         const { fullname } = req.body;
         const newUser = {
-            // username,
-            // password: bcrypt.hashSync(password, 8),
-            // fullname
+           
             fullname,
             password,
             username
@@ -73,7 +71,7 @@ passport.serializeUser((user, done) => {
 });
 
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async(id, done) => {
 
     const rows = pool.query('SELECT * FROM USERS WHERE id =  ?  ', [id], function (error, results, fields) {
         if (error) throw error;
