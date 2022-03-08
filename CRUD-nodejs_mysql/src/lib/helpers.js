@@ -13,24 +13,10 @@ helpers.encryptPassword = async (password) => {
 
      
 
-
-//  bcrypt.genSalt(10, function(err, salt) {
-//      const hash =  bcrypt.hash(password, salt, function(err, hash) {
-//          if (err){
-                         
-//                             console.log(err);
-//                         }
-//                        console.log(hash)
-//                         return hash;
-//                     });
-//      });
- 
-
-
 helpers.matchPassword = async (password,savedPassword) =>{
     try{
 
-        await bcrypt.compare(password,savedPassword);
+        return await bcrypt.compare(password,savedPassword);
     }catch(e){
         console.log(e);
     }
