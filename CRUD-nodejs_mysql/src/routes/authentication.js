@@ -23,7 +23,7 @@ router.post('/signin',(req,res,next)=>{
         successRedirect:'/profile',
         failureRedirect:'/signin',
         failureFlash: true
-       })(req,res,next)       
+       })(req,res,next);       
 });
 
 module.exports = router;
