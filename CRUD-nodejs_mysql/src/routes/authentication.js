@@ -16,7 +16,7 @@ router.get('/signin',(req,res)=>{
     res.render('auth/signin');
 });
 router.get('/profile', (req,res)=>{
-    res.send('Este es tu perfil');
+    res.render('profile')
 });
 router.post('/signin',(req,res,next)=>{
        passport.authenticate('local.signin',{

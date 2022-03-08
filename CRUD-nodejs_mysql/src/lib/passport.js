@@ -22,7 +22,7 @@ passport.use('local.signin', new LocalStrategy({
             if (validPassword) {
                 console.log('Contraseña valida');
                 console.log(validPassword);
-                return done(null, user, req.flash('SUCCESS', 'Bienvenido'));
+                return done(null, user, req.flash('success', 'Bienvenido'));
             } else {
                 console.log('Contraseña invalida');
                 return done(null, false, req.flash('message', 'Contraseña incorrecta'));
@@ -53,7 +53,7 @@ passport.use('local.signup', new LocalStrategy({ usernameField: 'username', pass
         };
        
         newUser.password = await helpers.encryptPassword(password);
-        const results = pool.query('INSERT INTO USERS SET ?  ', [newUser], function (error, results, fields) {
+        pool.query('INSERT INTO USERS SET ?  ', [newUser], function (error, results, fields) {
             if (error) throw error;
             newUser.id = results.insertId;
             console.log('-------------------');
@@ -68,16 +68,17 @@ passport.use('local.signup', new LocalStrategy({ usernameField: 'username', pass
 
 
 passport.serializeUser((user, done) => {
-
+    console.log('---serializeUser---:' , user.id);
     done(null, user.id);
 });
 
 
-passport.deserializeUser(async(id, done) => {
-
-    const rows = pool.query('SELECT * FROM USERS WHERE id =  ?  ', [id], function (error, results, fields) {
+passport.deserializeUser((id, done) => {
+    console.log('id:' , id);
+    const rows = pool.query('SELECT * FROM users WHERE id =  ?  ', [id], function (error, results, fields) {
         if (error) throw error;
         newUser.id = results.insertId;
+        console.log('---deserializeUser---:' , rows[0].id);
         return done(null, rows[0]);
     });
 });
