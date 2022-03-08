@@ -46,20 +46,21 @@ passport.use('local.signup', new LocalStrategy({ usernameField: 'username', pass
             // username,
             // password: bcrypt.hashSync(password, 8),
             // fullname
-            username,
-            password: bcrypt.hashSync(password, 8),
-            fullname
+            fullname,
+            password,
+            username
 
         };
-        // await pool.query('INSERT INTO USERS SET ?  ', [newUser], function (error, results, fields) {
-        //     if (error) throw error;
-        //     newUser.id = results.insertId;
-        //     return done(null, newUser);
-        // });
+       
         newUser.password = await helpers.encryptPassword(password);
-        const result = await pool.query('INSERT INTO USERS SET ?  ', [newUser],);
-        console.log(result)
-
+        const results = pool.query('INSERT INTO USERS SET ?  ', [newUser], function (error, results, fields) {
+            if (error) throw error;
+            newUser.id = results.insertId;
+            console.log('-------------------');
+            console.log(results);
+            return done(null, newUser);
+        });
+           
 
     }));
 
