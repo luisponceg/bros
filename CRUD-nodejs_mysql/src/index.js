@@ -4,10 +4,11 @@ const {engine}= require('express-handlebars')
 const path = require ('path');
 const flash = require('connect-flash');
 const session = require('express-session');
-const MySQLStore = require('express-mysql-session');
+const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport');
+// const validator = require('express-validator');
 const {database} = require('./keys');
- 
+// const bodyParser = require('body-parser'); 
 //Iniciamos
 const app = express();
 require('./lib/passport');
@@ -34,7 +35,8 @@ app.use(session({
     store: new MySQLStore(database)
 }));
 app.use(passport.initialize());
-passport.use(passport.session());
+app.use(passport.session());
+
 //Global variables
 app.use((req,res,next)=>{
     app.locals.success = req.flash('success');

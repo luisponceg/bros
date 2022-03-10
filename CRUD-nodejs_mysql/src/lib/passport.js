@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
+
 
 const pool = (require('../database'));
 const helpers = require('../lib/helpers');
@@ -16,13 +16,13 @@ passport.use('local.signin', new LocalStrategy({
         if (results.length > 0) {
             const userPass= results[0].password;
             const user = results[0];
-            console.log('Password:', userPass);
+        
             const validPassword =  await helpers.matchPassword(password, userPass);
-            console.log(validPassword);
+           
             if (validPassword) {
                 console.log('Contraseña valida');
                 console.log(validPassword);
-                return done(null, user, req.flash('success', 'Bienvenido'));
+                return done(null, user, req.flash('success', 'Bienvenido  '+  user.username));
             } else {
                 console.log('Contraseña invalida');
                 return done(null, false, req.flash('message', 'Contraseña incorrecta'));
@@ -30,8 +30,8 @@ passport.use('local.signin', new LocalStrategy({
           } else {
             return done(null, false, req.flash('message', 'Nombre de usuario incorrecto'));
           } });
- 
-   
+          console.log('user--->',user);
+       
 
 
 }));
@@ -69,16 +69,17 @@ passport.use('local.signup', new LocalStrategy({ usernameField: 'username', pass
 
 passport.serializeUser((user, done) => {
     console.log('---serializeUser---:' , user.id);
+    console.log(user);
     done(null, user.id);
 });
 
 
-passport.deserializeUser((id, done) => {
-    console.log('id:' , id);
-    const rows = pool.query('SELECT * FROM users WHERE id =  ?  ', [id], function (error, results, fields) {
-        if (error) throw error;
-        newUser.id = results.insertId;
-        console.log('---deserializeUser---:' , rows[0].id);
-        return done(null, rows[0]);
+passport.deserializeUser(function(id, done) {
+    console.log('[passport]deserializeUser');
+  pool.query("select * from users where id = ? ",[id],function(err,rows){	
+    if(err){console.log(err);}else{
+        if(rows.length!=0){done(err,rows[0])}
+        else{done(err,null);}
+    }    
     });
 });
