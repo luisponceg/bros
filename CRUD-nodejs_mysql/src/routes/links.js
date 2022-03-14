@@ -33,7 +33,7 @@ router.post('/add',isLoggedIn, (req,res) =>{ // <- La función middleware ya no 
     });
 });
 router.get('/',isLoggedIn,(req,res)=>{
-    pool.query('SELECT * FROM links WHERE user_id = ?', [req.user.id], function (error, results, fields) {
+    pool.query('SELECT * FROM links WHERE user_id = ?', [req.user], function (error, results, fields) {
         if (error) throw error;    
         const links = results; 
      
